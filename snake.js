@@ -59,30 +59,39 @@ var snake = {
 	newApple: function()
 	{
 		// snake.figure.fid = Math.floor(Math.random() * (snake.figures.length));
-		var result = false;
 		var randY = Math.floor(Math.random() * 15);
 		var randX = Math.floor(Math.random() * 15);
 		var snakeLen = snake.snake_cells.length - 1;
-		for (var i = 0; i <= snakeLen; i++)
+		var result = true;
+		for (var iLen = 0; iLen <= snakeLen; iLen++)
 		{
-			var y = snake.snake_cells[i][0];
-			var x = snake.snake_cells[i][1];
-			// if ((randY == y) && (randX == x))
-			// {
-			// 	snake.newApple();
-			// }
-			// else
-			// {
-			// 	result = true;
-			// }
+			var curY = snake.snake_cells[iLen][0];
+			var curX = snake.snake_cells[iLen][1];
+			if ((curY == randY) && (curX == randX))
+			{
+				result = false;
+			}
 		}
-		// if (result)
-		if (1)
+		if (false)
 		{
-			console.log('NEW!');
+			snake.newApple();
+		}
+		else
+		{
 			snake.table_arr[randY][randX] = 1;
 			snake.render();
-			// $('#' + randY + '_' + randX).addClass('selected');
+			var ll = 0;
+			for (var xx = 0; xx <= 15; xx++)
+			{
+				for (var yy = 0; yy <= 15; yy++)
+				{
+					if (snake.table_arr[yy][xx] == 1)
+					{
+						ll++;
+					}
+				}
+			}
+			console.log(randY, randX, ll);
 		}
 	},
 
@@ -91,7 +100,16 @@ var snake = {
 		// snake.snake_cells.push([y,x]);
 		snake.snake_cells.unshift([y,x]);
 		snake.printSnake();
-		snake.newApple();
+		window.clearInterval(snake.interval);
+		snake.time -= 25;
+		snake.interval = window.setInterval(snake.move, snake.time);
+	},
+
+	removeApple: function(y, x)
+	{
+		snake.table_arr[y][x] = 0;
+		$('#' + y + '_' + x).removeClass('selected');
+		// snake.render();	
 	},
 
 	opportunity: function(y, x)
@@ -109,9 +127,12 @@ var snake = {
 					return false;
 				}
 			}
-			if (snake.table_arr[y][x] == 1)
+
+			if (snake.table_arr[y][x] == 1) // наткнулись на яблоко
 			{
-				snake.grow(y, x);
+				snake.removeApple(y,x);
+				snake.newApple(); // добавляем яблоко
+				snake.grow(y,x);
 			}
 			return true;
 		}
@@ -122,16 +143,12 @@ var snake = {
 	},
 
 	interval: 0,
-	time: 1000,
+	time: 500,
 	curY: 0,
 	curX: 0,
 	oldY: 0,
 	points: 0,
 	direction: 'down',
-	// figure: {
-	// 	fid:1,
-	// 	position:0
-	// },
 
 	// newFigure: function()
 	// {
@@ -219,6 +236,8 @@ var snake = {
 			snake.snake_cells.pop(); //извлекаем последний элемент
 		}
 	},
+
+
 
 	moveRight: function(pos)
 	{
@@ -325,7 +344,7 @@ var snake = {
 		snake.newApple();
 		// snake.printSnake();
 		// snake.checkFullRow();
-		// snake.interval = window.setInterval(snake.move, snake.time);
+		snake.interval = window.setInterval(snake.move, snake.time);
 	}
 };
 
