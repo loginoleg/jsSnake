@@ -58,6 +58,7 @@ var snake = {
 
 	newApple: function()
 	{
+		console.log('newApple');
 		// snake.figure.fid = Math.floor(Math.random() * (snake.figures.length));
 		var randY = Math.floor(Math.random() * 15);
 		var randX = Math.floor(Math.random() * 15);
@@ -69,17 +70,19 @@ var snake = {
 			var curX = snake.snake_cells[iLen][1];
 			if ((curY == randY) && (curX == randX))
 			{
+				console.log(curY, randY, curX, randX);
 				result = false;
 			}
 		}
-		if (false)
+		if (!result)
 		{
 			snake.newApple();
 		}
 		else
 		{
 			snake.table_arr[randY][randX] = 1;
-			snake.render();
+			// snake.render();
+			$('#' + randY + '_' + randX).addClass('apple');
 			var ll = 0;
 			for (var xx = 0; xx <= 15; xx++)
 			{
@@ -101,14 +104,14 @@ var snake = {
 		snake.snake_cells.unshift([y,x]);
 		snake.printSnake();
 		window.clearInterval(snake.interval);
-		snake.time -= 25;
+		// snake.time -= 25;
 		snake.interval = window.setInterval(snake.move, snake.time);
 	},
 
 	removeApple: function(y, x)
 	{
 		snake.table_arr[y][x] = 0;
-		$('#' + y + '_' + x).removeClass('selected');
+		$('#' + y + '_' + x).removeClass('apple');
 		// snake.render();	
 	},
 
