@@ -2,9 +2,9 @@ var snake = {
 
 	table_arr: 		[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
-					 [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0], 
-					 [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0], 
-					 [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0], 
+					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
+					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
+					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
@@ -20,7 +20,11 @@ var snake = {
 
 	snake_cells: 	[[6,8],
 					 [7,8],
-					 [8,8]],
+					 [8,8],
+					 [9,8],
+					 [10,8],
+					 [11,8]
+					 ],
 
 // checkFullRow: function()
 // 	{
@@ -52,24 +56,64 @@ var snake = {
 // 		snake.render();
 // 	},
 
+	newApple: function()
+	{
+		// snake.figure.fid = Math.floor(Math.random() * (snake.figures.length));
+		var result = false;
+		var randY = Math.floor(Math.random() * 15);
+		var randX = Math.floor(Math.random() * 15);
+		var snakeLen = snake.snake_cells.length - 1;
+		for (var i = 0; i <= snakeLen; i++)
+		{
+			var y = snake.snake_cells[i][0];
+			var x = snake.snake_cells[i][1];
+			// if ((randY == y) && (randX == x))
+			// {
+			// 	snake.newApple();
+			// }
+			// else
+			// {
+			// 	result = true;
+			// }
+		}
+		// if (result)
+		if (1)
+		{
+			console.log('NEW!');
+			snake.table_arr[randY][randX] = 1;
+			snake.render();
+			// $('#' + randY + '_' + randX).addClass('selected');
+		}
+	},
+
+	grow: function(y, x)
+	{
+		// snake.snake_cells.push([y,x]);
+		snake.snake_cells.unshift([y,x]);
+		snake.printSnake();
+		snake.newApple();
+	},
+
 	opportunity: function(y, x)
 	{
 		// Проверяем не выходит ли фигура за границы экрана
-		if ((y <= 15) && (x <=15))
+		if ((y <= 15) && (x <=15) && (y >= 0) && (x >= 0))
 		{
-			// // Проверяем не задевает ли фигура сущестующую "постройку"
-			// for (i = y; i < y + snake.figures[figure.fid][figure.position].length; i++)
-			// {
-			// 	for (j = x; j < x + snake.figures[figure.fid][figure.position][0].length; j++)
-			// 	{
-			// 		if (snake.table_arr[i][j] == 1 && snake.figures[figure.fid][figure.position][i-y][j-x] == 1)
-			// 		// if(0)
-			// 		{
-			// 			return false;
-			// 		}
-			// 	}
-			// }
-			// return true;
+			var snakeLen = snake.snake_cells.length - 1;
+			for (var i = 0; i <= snakeLen; i++)
+			{
+				var curY = snake.snake_cells[i][0];
+				var curX = snake.snake_cells[i][1];
+				if ((curY == y) && (curX == x))
+				{
+					return false;
+				}
+			}
+			if (snake.table_arr[y][x] == 1)
+			{
+				snake.grow(y, x);
+			}
+			return true;
 		}
 		else
 		{
@@ -138,140 +182,93 @@ var snake = {
 
 	printSnake: function()
 	{
-		console.log('printSnake');
-		for (var len = 0; len < snake.snake_cells.length; len++)
+		var snakeLen = snake.snake_cells.length;
+		for (var len = 0; len < snakeLen; len++)
 		{
-			console.log(snake.snake_cells[len][0]);
 			var y = snake.snake_cells[len][0];
 			var x = snake.snake_cells[len][1];
 			$('#' + y + '_' + x).addClass('selected');
 		}
-	},
-
-
-	// printFigure: function(initY, initX, figure)
-	// {
-	// 	for (y = initY; y <= initY - 1 + snake.figures[figure.fid][figure.position].length; y++)
-	// 	{
-	// 		for (x = initX; x <= initX - 1 + snake.figures[figure.fid][figure.position][0].length; x++)
-	// 		{
-	// 			if (snake.figures[figure.fid][figure.position][y - initY][x - initX])
-	// 			{
-	// 				$('#' + y + '_' + x).addClass('selected');
-	// 			}
-	// 		}
-	// 	}
-	// },
-
-	// removeFigure: function(initY, initX, figure)
-	// {
-	// 	for (y = initY; y <= initY - 1 + snake.figures[figure.fid][figure.position].length; y++)
-	// 	{
-	// 		for (x = initX; x <= initX - 1 + snake.figures[figure.fid][figure.position][0].length; x++)
-	// 		{
-	// 			if (snake.figures[figure.fid][figure.position][y - initY][x - initX])
-	// 			{
-	// 				$('#' + y + '_' + x).removeClass('selected');
-	// 			}
-	// 		}
-	// 	}
-	// },
-
-	moveLeft: function(pos)
-	{
-		if (snake.opportunity(snake.curY, snake.curX - 1, snake.figure))
-		{
-			snake.removeFigure(snake.curY, snake.curX, snake.figure);
-			snake.printFigure(snake.curY, --snake.curX, snake.figure);
-		}
-	},
-
-	moveRight: function(pos)
-	{
-		// if (snake.opportunity(snake.curY, snake.curX + 1, snake.figure))
-		if(1)
-		{
-			console.log('right');
-			console.log(snake.snake_cells);
-			// snake.removeFigure(snake.curY, snake.curX, snake.figure);
-			// snake.printFigure(snake.curY, ++snake.curX, snake.figure);
-		}
+		var y = snake.snake_cells[snakeLen - 1][0];
+		var x = snake.snake_cells[snakeLen - 1][1];
+		$('#' + y + '_' + x).removeClass('selected');
 	},
 
 	moveDown: function(pos)
 	{
-		snake.oldY = snake.curY;
-		if (snake.opportunity(snake.curY + 1, snake.curX, snake.figure))
+		var y = snake.snake_cells[0][0];
+		var x = snake.snake_cells[0][1];
+		if (snake.opportunity(y + 1, x))
 		{
-			snake.removeFigure(snake.curY, snake.curX, snake.figure);
-			snake.printFigure(++snake.curY, snake.curX, snake.figure);
-		}
-		if (snake.oldY == snake.curY)
-		{
-			for (y = snake.curY; y <= snake.curY - 1 + snake.figures[snake.figure.fid][snake.figure.position].length; y++)
-			{
-				for (x = snake.curX; x <= snake.curX - 1 + snake.figures[snake.figure.fid][snake.figure.position][0].length; x++)
-				{
-					if (snake.figures[snake.figure.fid][snake.figure.position][y - snake.curY][x - snake.curX])
-					{
-						$('#' + y + '_' + x).removeClass('selected');
-						snake.table_arr[y][x] = 1;
-						window.clearInterval(snake.interval);
-					}
-				}
-			}
-			snake.checkFullRow();
-			snake.render();
-			for (i = 0; i <= 11; i++)
-			{
-					console.log (snake.table_arr[i][0],
-						snake.table_arr[i][1],
-						snake.table_arr[i][2],
-						snake.table_arr[i][3],
-						snake.table_arr[i][4],
-						snake.table_arr[i][5],
-						snake.table_arr[i][6],
-						snake.table_arr[i][7]
-						);
-			}
-			snake.newFigure();
+			y++;
+			snake.snake_cells.unshift([y,x]);
+			snake.printSnake();
+			snake.snake_cells.pop(); //извлекаем последний элемент
 		}
 	},
 
 	moveUp: function(pos)
 	{
-		// if (snake.opportunity(snake.curY, snake.curX + 1, snake.figure))
-		if(1)
+		var y = snake.snake_cells[0][0];
+		var x = snake.snake_cells[0][1];
+		if (snake.opportunity(y - 1, x))
 		{
-			console.log('UUUP');
-			
-			// snake.removeFigure(snake.curY, snake.curX, snake.figure);
-			// snake.printFigure(snake.curY, ++snake.curX, snake.figure);
+			y--;
+			snake.snake_cells.unshift([y,x]);
+			snake.printSnake();
+			snake.snake_cells.pop(); //извлекаем последний элемент
 		}
 	},
 
-	move: function(direction)
+	moveRight: function(pos)
 	{
-		if (direction == 'up')
+		var y = snake.snake_cells[0][0];
+		var x = snake.snake_cells[0][1];
+		if (snake.opportunity(y, x + 1))
+		{
+			x++;
+			snake.snake_cells.unshift([y,x]);
+			snake.printSnake();
+			snake.snake_cells.pop(); //извлекаем последний элемент
+		}
+	},
+
+	moveLeft: function(pos)
+	{
+		var y = snake.snake_cells[0][0];
+		var x = snake.snake_cells[0][1];
+		if (snake.opportunity(y, x - 1))
+		{
+			x--;
+			snake.snake_cells.unshift([y,x]);
+			snake.printSnake();
+			snake.snake_cells.pop(); //извлекаем последний элемент
+		}
+	},
+
+
+	move: function()
+	{
+		if (snake.direction == 'up')
 		{
 			snake.direction = 'up';
 			snake.moveUp();
 		}
-		else if (direction == 'down')
+		else if (snake.direction == 'down')
 		{
 			snake.direction = 'down';
+			snake.moveDown();
 		}
-		else if (direction == 'left')
+		else if (snake.direction == 'left')
 		{
 			snake.direction = 'left';
+			snake.moveLeft();
 		}
-		else if (direction == 'right')
+		else if (snake.direction == 'right')
 		{
 			snake.direction = 'right';
 			snake.moveRight();
 		}
-
-
 	},
 
 	render: function()
@@ -298,21 +295,25 @@ var snake = {
 	{
 		$('html').keydown(function(e)
 		{
-			if (e.which == 37) // left arrow key
+			if ((e.which >= 37) && (e.which <= 40))
 			{
-				snake.move("left");
-			}
-			else if (e.which == 38) // up arrow key
-			{
-				snake.move("up");
-			}
-			else if (e.which == 39) // right arrow key
-			{
-				snake.move("right");
-			}
-			else if (e.which == 40) // down arrow key
-			{
-				snake.move("down");
+				if ((e.which == 37) && (snake.direction != 'right')) // left arrow key
+				{
+					snake.direction = 'left' ;
+				}
+				else if ((e.which == 38) && (snake.direction != 'down')) // up arrow key
+				{
+					snake.direction = 'up';
+				}
+				else if ((e.which == 39) && (snake.direction != 'left'))// right arrow key
+				{
+					snake.direction = 'right';
+				}
+				else if ((e.which == 40) && (snake.direction != 'up')) // down arrow key
+				{
+					snake.direction = 'down';
+				}
+				snake.move();
 			}
 		});
 	},
@@ -321,7 +322,8 @@ var snake = {
 	{
 		snake.initKey();
 		snake.render();
-		snake.printSnake(snake.curY, snake.curX, snake.figure);
+		snake.newApple();
+		// snake.printSnake();
 		// snake.checkFullRow();
 		// snake.interval = window.setInterval(snake.move, snake.time);
 	}
