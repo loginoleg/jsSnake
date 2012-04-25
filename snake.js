@@ -18,12 +18,9 @@ var snake = {
 					 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],
 
 
-	snake_cells: 	[[6,8],
-					 [7,8],
-					 [8,8],
-					 [9,8],
-					 [10,8],
-					 [11,8]
+	snake_cells: 	[[13,15],
+					 [14,15],
+					 [15,15]
 					 ],
 
 	newApple: function()
@@ -74,7 +71,9 @@ var snake = {
 		snake.snake_cells.unshift([y,x]);
 		snake.printSnake();
 		window.clearInterval(snake.interval);
-		// snake.time -= 25;
+		snake.time -= 5;
+		snake.points++;
+		$('#points').text(snake.points);
 		snake.interval = window.setInterval(snake.move, snake.time);
 	},
 
@@ -119,7 +118,7 @@ var snake = {
 	time: 500,
 
 	points: 0,
-	direction: 'right',
+	direction: 'up',
 
 	changePosition: function(initY, initX, figure)
 	{
@@ -204,7 +203,6 @@ var snake = {
 			snake.snake_cells.pop(); //извлекаем последний элемент
 		}
 	},
-
 
 	move: function()
 	{
