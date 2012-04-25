@@ -26,36 +26,6 @@ var snake = {
 					 [11,8]
 					 ],
 
-// checkFullRow: function()
-// 	{
-// 		for (y = 0; y <= 11; y++)
-// 		{
-// 			isfull = true;
-// 			for(x = 0; x <= 7; x++)
-// 			{
-// 				if (snake.table_arr[y][x] == 0)
-// 				{
-// 					isfull = false
-// 				}
-// 			}
-// 			if (isfull)
-// 			{
-// 				for (var ly = y; ly > 0; ly--)
-// 				{
-// 					for (var lx = 0; lx <= 7; lx ++)
-// 					{
-// 						snake.table_arr[ly][lx] = 0;
-// 						snake.table_arr[ly][lx] = snake.table_arr[ly-1][lx];
-// 					}
-// 				}
-// 				snake.points += 8;
-// 				snake.interval -= 8;
-// 				$('#points').text(snake.points);
-// 			}
-// 		}
-// 		snake.render();
-// 	},
-
 	newApple: function()
 	{
 		console.log('newApple');
@@ -147,41 +117,9 @@ var snake = {
 
 	interval: 0,
 	time: 500,
-	curY: 0,
-	curX: 0,
-	oldY: 0,
+
 	points: 0,
-	direction: 'down',
-
-	// newFigure: function()
-	// {
-	// 	isGO = false;
-	// 	snake.figure.fid = Math.floor(Math.random() * (snake.figures.length));
-
-	// 	for (var i = 0; i < 3; i++)
-	// 	{
-	// 		for (var j = 0; j < 3; j++)
-	// 		{
-	// 			if(snake.table_arr[i][j] == 1)
-	// 			{
-	// 				isGO = true;
-	// 			}
-	// 		}	
-	// 	}
-
-	// 	if (isGO) 
-	// 	{
-	// 		window.clearInterval(snake.interval);
-	// 		alert('Game Over');
-	// 	}
-	// 	else
-	// 	{
-	// 		snake.curY = 0;
-	// 		snake.curX = 0;
-	// 		snake.printFigure(snake.curY, snake.curX, snake.figure);
-	// 		snake.interval = window.setInterval(snake.moveDown, snake.time);
-	// 	}
-	// },
+	direction: 'right',
 
 	changePosition: function(initY, initX, figure)
 	{
@@ -214,19 +152,6 @@ var snake = {
 		$('#' + y + '_' + x).removeClass('selected');
 	},
 
-	moveDown: function(pos)
-	{
-		var y = snake.snake_cells[0][0];
-		var x = snake.snake_cells[0][1];
-		if (snake.opportunity(y + 1, x))
-		{
-			y++;
-			snake.snake_cells.unshift([y,x]);
-			snake.printSnake();
-			snake.snake_cells.pop(); //извлекаем последний элемент
-		}
-	},
-
 	moveUp: function(pos)
 	{
 		var y = snake.snake_cells[0][0];
@@ -239,8 +164,6 @@ var snake = {
 			snake.snake_cells.pop(); //извлекаем последний элемент
 		}
 	},
-
-
 
 	moveRight: function(pos)
 	{
@@ -268,9 +191,25 @@ var snake = {
 		}
 	},
 
+	moveDown: function(pos)
+	{
+		var y = snake.snake_cells[0][0];
+		var x = snake.snake_cells[0][1];
+
+		if (snake.opportunity(y + 1, x))
+		{
+			y++;
+			snake.snake_cells.unshift([y,x]);
+			snake.printSnake();
+			snake.snake_cells.pop(); //извлекаем последний элемент
+		}
+	},
+
 
 	move: function()
 	{
+		var oldY = snake.snake_cells[0][0];
+		var oldX = snake.snake_cells[0][1];
 		if (snake.direction == 'up')
 		{
 			snake.direction = 'up';
@@ -291,6 +230,16 @@ var snake = {
 			snake.direction = 'right';
 			snake.moveRight();
 		}
+		var curY = snake.snake_cells[0][0];
+		var curX = snake.snake_cells[0][1];
+
+		if ((oldY == curY) && (oldX == curX))
+		{
+			window.alert('gameover!');
+			window.clearInterval(snake.interval);
+		}
+		console.log(oldY, curY, oldX, curX);
+
 	},
 
 	render: function()
